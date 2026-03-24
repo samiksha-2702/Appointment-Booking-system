@@ -97,7 +97,7 @@ def signin(request):
 
         if user is not None:
             login(request, user)
-            return redirect('home')
+            return redirect('dashboard')
         else:
             return HttpResponse("Username or password is incorrect")
 
@@ -108,6 +108,6 @@ def logout_fun(request):
     return redirect('signin')
 
 
-def home(request):
-    return render(request, 'home.html')
+def dashboard(request):
+    return render(request, 'dashboard.html')
 
