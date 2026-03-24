@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Appointments</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border: 1px solid #e9ecef;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        h2 {
+            font-size: 28px;
+            color: #1a73e8;
+            font-weight: 600;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: #1a73e8;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 8px;
+        }
+
+        .nav-links a:hover {
+            color: #1557b0;
+            background: #f8f9fa;
+        }
+
+        hr {
+            margin: 20px 0;
+            border: none;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .appointments-table {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        th {
+            background: #1a73e8;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            color: #5f6368;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-booked {
+            background: #e6f4ea;
+            color: #1e7e34;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-cancelled {
+            background: #fce8e6;
+            color: #d93025;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-default {
+            background: #f1f3f4;
+            color: #5f6368;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .action-links {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .action-links a {
+            color: #1a73e8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .action-links a:hover {
+            color: #1557b0;
+            text-decoration: underline;
+        }
+
+        .cancelled-text {
+            color: #adb5bd;
+            font-size: 14px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #5f6368;
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            color: #e9ecef;
+            margin-bottom: 20px;
+        }
+
+        .empty-state p {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .empty-state a {
+            display: inline-block;
+            padding: 10px 24px;
+            background: #1a73e8;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .empty-state a:hover {
+            background: #1557b0;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(26,115,232,0.3);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            h2 {
+                font-size: 24px;
+            }
+            
+            th, td {
+                padding: 10px;
+                font-size: 14px;
+            }
+            
+            .action-links {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>My Appointments</h2>
+            <div class="nav-links">
+                <a href="{% url 'book_appointment' %}">📅 Book Appointment</a>
+                <a href="{% url 'logout' %}">🚪 Logout</a>
+            </div>
+        </div>
+
+        <hr />
+
+        {% if appointments %}
+        <div class="appointments-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Doctor</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in appointments %}
+                    <tr>
+                        <td>{{ app.doctor.name }}</td>
+                        <td>{{ app.date }}</td>
+                        <td>{{ app.time }}</td>
+                        <td>
+                            {% if app.status == 'Booked' %}
+                            <span class="status-booked">{{ app.status }}</span>
+                            {% elif app.status == 'Cancelled' %}
+                            <span class="status-cancelled">{{ app.status }}</span>
+                            {% else %}
+                            <span class="status-default">{{ app.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if app.status != 'Cancelled' %}
+                            <div class="action-links">
+                                <a href="{% url 'update_appointment' app.id %}">✏️ Edit</a> |
+                                <a href="{% url 'cancel_appointment' app.id %}" onclick="return confirm('Are you sure you want to cancel this appointment?')">
+                                    ❌ Cancel
+                                </a>
+                            </div>
+                            {% else %}
+                            <span class="cancelled-text">Cancelled</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i>📋</i>
+            <p>No appointments yet.</p>
+            <a href="{% url 'book_appointment' %}">Book Your First Appointment</a>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
