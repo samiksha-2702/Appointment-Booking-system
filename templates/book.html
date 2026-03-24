@@ -120,6 +120,7 @@
             <div class="form-group">
                 <label>Doctor:</label>
                 <select name="doctor">
+                  <option value="" selected>--Select Doctor--</option>
                     {% for doctor in doctors %}
                     <option value="{{ doctor.id }}">{{ doctor.name }} ({{ doctor.specialization }})</option>
                     {% endfor %}
