@@ -8,22 +8,22 @@ A full-featured **Django web application** that allows users to register, log in
 ## 📸 Screenshots
  
 ### 🔐 Login
-![Login](screenshots/User_login.png)
+![Login](screenshots/User-login.png)
 
 ### 📝 Register
-![Register](screenshots/User_registration.png)
+![Register](screenshots/User-registration.png)
 
 ### 🏠 Dashboard
 ![Dashboard](screenshots/dashboard.png)
 
 ### 📅 Book Appointment
-![Book Appointment](screenshots/book_appointment.png)
+![Book Appointment](screenshots/book-appointment.png)
 
 ### 📋 View Appointments
-![View Appointments](screenshots/view_appointments.png)
+![View Appointments](screenshots/view-appointments.png)
 
 ### ✏️ Update Appointment
-![Update Appointment](screenshots/update_appointment.png)
+![Update Appointment](screenshots/update-appointment.png)
 
 ## ✨ Features
 
