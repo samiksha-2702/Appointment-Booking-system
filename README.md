@@ -6,15 +6,15 @@ A full-featured **Django web application** that allows users to register, log in
 
 
 ## 📸 Screenshots
+
+### 🏠 Dashboard
+![Dashboard](screenshots/dashboard.png)
  
 ### 🔐 Login
 ![Login](screenshots/User-login.png)
 
 ### 📝 Register
 ![Register](screenshots/User-registration.png)
-
-### 🏠 Dashboard
-![Dashboard](screenshots/dashboard.png)
 
 ### 📅 Book Appointment
 ![Book Appointment](screenshots/book-appointment.png)
