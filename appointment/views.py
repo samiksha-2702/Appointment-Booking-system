@@ -51,7 +51,14 @@ def view_appointments(request):
     appointments = Appointment.objects.filter(user=request.user)
     if status:
         appointments = appointments.filter(status=status)
-    return render(request, 'views.html', {'appointments': appointments})
+
+    # Add user to context for profile info
+    context = {
+        'appointments': appointments,
+        'user': request.user,
+    }
+
+    return render(request, 'views.html', context)
 
 # Update
 @login_required(login_url='/signin/')
@@ -159,7 +166,12 @@ def user_dashboard(request):
 
     return render(request, 'dashboard.html', context)
 
-@login_required
-def user_profile(request, username):
-    user = get_object_or_404(User, username=username)
-    return render(request, 'profile.html', {'profile_user': user})
+@login_required(login_url='/signin/')
+def update_profile(request):
+    user = request.user
+    if request.method == 'POST':
+        user.username = request.POST.get('username')
+        user.email = request.POST.get('email')
+        user.save()
+        return redirect('view_appointments')
+    return render(request, 'update_profile.html', {'user': user})

@@ -356,9 +356,7 @@
         
         <div style="display:flex; align-items:center; gap:10px;">
             <i class="fas fa-user-circle" style="font-size:20px; color:#1a73e8;"></i>
-            <a href="{% url 'user_profile' request.user.username %}" style="font-weight: 600; text-decoration: none;">
-                {{ request.user.username }}
-            </a>
+            <span style="font-weight:600;">{{ request.user.username }}</span>
 
             <a href="{% url 'dashboard' %}" class="btn-register">Dashboard</a>
             <a href="{% url 'logout' %}" class="btn-login">Logout</a>
