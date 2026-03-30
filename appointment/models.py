@@ -10,6 +10,14 @@ class Doctor(models.Model):
 
     def __str__(self):
         return self.name
+    
+TIME_SLOTS = [
+    ('10:00 AM', '10:00 AM'),
+    ('11:00 AM', '11:00 AM'),
+    ('12:00 PM', '12:00 PM'),
+    ('02:00 PM', '02:00 PM'),
+    ('03:00 PM', '03:00 PM'),
+]
 
 class Appointment(models.Model):
     STATUS_CHOICES = [

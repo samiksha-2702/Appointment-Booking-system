@@ -1,10 +1,13 @@
-from django.shortcuts import render, redirect
+from datetime import date, datetime
+from django.shortcuts import get_object_or_404, render, redirect
 from appointment.models import Doctor, Appointment
 from django.http import HttpResponse
 import re
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from datetime import date as dt_date
+from collections import Counter
 
 # Create your views here.
 # Create
@@ -19,6 +22,11 @@ def book_appointment(request):
 
         if not doctor_id or not date or not time:
             return render(request, 'book.html', {'doctors': doctors, 'error': 'All fields are required'})
+        
+        selected_date = request.POST.get('selected_date')
+        
+        if selected_date < str(dt_date.today()):
+            return HttpResponse("Cannot book past dates")
 
         doctor = Doctor.objects.get(id=doctor_id)
 
@@ -38,13 +46,17 @@ def book_appointment(request):
 # Read
 @login_required(login_url='/signin/')
 def view_appointments(request):
+    status = request.GET.get('status')
+
     appointments = Appointment.objects.filter(user=request.user)
+    if status:
+        appointments = appointments.filter(status=status)
     return render(request, 'views.html', {'appointments': appointments})
 
 # Update
 @login_required(login_url='/signin/')
 def update_appointment(request, id):
-    appointment = Appointment.objects.get(id=id)
+    appointment = Appointment.objects.get(id=id, user=request.user)
 
     if request.method == 'POST':
         appointment.date = request.POST.get('date')
@@ -72,15 +84,19 @@ def register(request):
         confirm_pass = request.POST.get('confirm_pass')
 
         if password != confirm_pass:
-            return render(request, 'register.html')
+            return HttpResponse("Passwords do not match")
         
         if len(password) < 8:
             return HttpResponse("Password must be atleast 8 characters long.")
         
         if not re.search(r'[A-Z]', password):
             return HttpResponse("Password must contain at least one uppercase letter.")
+        
         if not re.search(r'[0-9]', password):
             return HttpResponse("Password must contain at least one number.")
+        
+        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+            return HttpResponse("Password must contain at least one special character.")
         
         my_user = User.objects.create_user(username, email, password)
         my_user.save()
@@ -107,7 +123,43 @@ def logout_fun(request):
     logout(request)
     return redirect('signin')
 
-
+@login_required(login_url='signin')
 def dashboard(request):
-    return render(request, 'dashboard.html')
+    return render(request, 'dashboard.html', {'username': request.user.username})
 
+@login_required
+def user_dashboard(request):
+    user = request.user
+
+    today = date.today()
+
+    upcoming = Appointment.objects.filter(user=user, date__gte=today).order_by('date')
+    past = Appointment.objects.filter(user=user, date__lt=today).order_by('-date')
+
+    total = Appointment.objects.filter(user=user).count()
+    completed = Appointment.objects.filter(user=user, status='completed').count()
+    cancelled = Appointment.objects.filter(user=user, status='cancelled').count()
+
+    appointments = Appointment.objects.filter(user=user)
+    doctors = [a.Doctor for a in appointments]
+
+    if doctors:
+        most_common = Counter(doctors).most_common(1)[0][0]  # Doctor object
+    else:
+        most_common = None
+
+    context = {
+        'upcoming': upcoming,
+        'past': past,
+        'total': total,
+        'completed': completed,
+        'cancelled': cancelled,
+        'recommended_doctor': most_common,  
+    }
+
+    return render(request, 'dashboard.html', context)
+
+@login_required
+def user_profile(request, username):
+    user = get_object_or_404(User, username=username)
+    return render(request, 'profile.html', {'profile_user': user})
