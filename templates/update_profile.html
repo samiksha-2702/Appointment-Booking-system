@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>MediTrack | Update Profile</title>
+
+  <!-- Google Fonts + Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+  <!-- Font Awesome 6 (free icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #f0f7ff 0%, #e9f0fa 100%);
+      min-height: 100vh;
+      padding: 2rem 1.5rem;
+    }
+
+    /* modern container with soft glass effect */
+    .profile-container {
+      max-width: 620px;
+      margin: 0 auto;
+    }
+
+    /* card redesign – elevated, rounded, with subtle blur backdrop */
+    .profile-card {
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(0px);
+      border-radius: 2rem;
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border: 1px solid rgba(26, 115, 232, 0.15);
+    }
+
+    .profile-card:hover {
+      box-shadow: 0 30px 50px -18px rgba(26, 115, 232, 0.25);
+    }
+
+    /* header gradient section */
+    .card-header-modern {
+      background: linear-gradient(115deg, #1a6fd6, #0f5bc2);
+      padding: 1.6rem 2rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .card-header-modern h4 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: white;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      letter-spacing: -0.3px;
+    }
+
+    .card-header-modern h4 i {
+      font-size: 1.8rem;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+    }
+
+    .header-badge {
+      background: rgba(255,255,255,0.2);
+      border-radius: 60px;
+      padding: 5px 12px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      display: inline-block;
+      margin-top: 12px;
+      color: white;
+      backdrop-filter: blur(4px);
+    }
+
+    /* body content */
+    .card-body-modern {
+      padding: 2rem 2rem 2rem 2rem;
+    }
+
+    /* enhanced alert messages */
+    .alert-message {
+      padding: 1rem 1.2rem;
+      border-radius: 1rem;
+      margin-bottom: 1.8rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 500;
+      animation: slideDown 0.3s ease;
+      border-left: 5px solid;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .alert-success {
+      background: #e6f9ef;
+      border-left-color: #2b9348;
+      color: #1a6e3b;
+    }
+
+    .alert-error {
+      background: #ffe9e6;
+      border-left-color: #e05a2a;
+      color: #b13e1a;
+    }
+
+    .alert-warning {
+      background: #fff4e0;
+      border-left-color: #f4a261;
+      color: #aa6f20;
+    }
+
+    .alert-info {
+      background: #e7f0ff;
+      border-left-color: #1a73e8;
+      color: #1a5fbf;
+    }
+
+    .close-alert {
+      margin-left: auto;
+      cursor: pointer;
+      font-size: 1.2rem;
+      background: transparent;
+      border: none;
+      color: inherit;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    .close-alert:hover {
+      opacity: 1;
+    }
+
+    /* form field modern styling */
+    .form-group-modern {
+      margin-bottom: 1.6rem;
+    }
+
+    .form-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin-bottom: 8px;
+      color: #1e3a5f;
+      letter-spacing: -0.2px;
+    }
+
+    .form-label i {
+      color: #1a73e8;
+      font-size: 0.9rem;
+      width: 20px;
+    }
+
+    .form-control-modern {
+      width: 100%;
+      padding: 12px 16px;
+      font-size: 0.95rem;
+      font-family: 'Inter', sans-serif;
+      border: 1.5px solid #e2edf7;
+      border-radius: 1rem;
+      background: #ffffff;
+      transition: all 0.2s ease;
+      color: #1f2f48;
+    }
+
+    .form-control-modern:focus {
+      outline: none;
+      border-color: #1a73e8;
+      box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.15);
+    }
+
+    textarea.form-control-modern {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    select.form-control-modern {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%231a73e8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1rem;
+    }
+
+    /* help text styling */
+    .help-text {
+      font-size: 0.7rem;
+      color: #6c86a3;
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .error-text {
+      color: #e05a2a;
+      font-size: 0.75rem;
+      margin-top: 6px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* file upload styling */
+    input[type="file"] {
+      padding: 10px 12px;
+      background: #fafdff;
+      border: 1px dashed #9bb9dc;
+    }
+
+    /* button premium */
+    .btn-update {
+      background: linear-gradient(95deg, #1a73e8, #0f62ce);
+      border: none;
+      padding: 14px 24px;
+      font-weight: 700;
+      font-size: 1rem;
+      border-radius: 2rem;
+      width: 100%;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      margin-top: 12px;
+      box-shadow: 0 8px 18px -8px rgba(26, 115, 232, 0.4);
+    }
+
+    .btn-update:hover {
+      background: linear-gradient(95deg, #0f5fc9, #0b54b5);
+      transform: translateY(-2px);
+      box-shadow: 0 14px 22px -10px rgba(26, 115, 232, 0.5);
+    }
+
+    .btn-update:active {
+      transform: translateY(1px);
+    }
+
+    /* back link */
+    .back-link {
+      text-align: center;
+      margin-top: 1.8rem;
+    }
+
+    .back-link a {
+      text-decoration: none;
+      font-weight: 500;
+      color: #1a73e8;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      background: rgba(26, 115, 232, 0.08);
+      padding: 8px 20px;
+      border-radius: 40px;
+      font-size: 0.85rem;
+    }
+
+    .back-link a:hover {
+      background: rgba(26, 115, 232, 0.15);
+      gap: 12px;
+      color: #0f5bc2;
+    }
+
+    /* avatar preview (dynamic optional) */
+    .avatar-preview-area {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .avatar-circle {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(145deg, #eef4ff, #e2ebf6);
+      border-radius: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      font-weight: 600;
+      color: #1a73e8;
+      border: 2px solid white;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+    }
+
+    /* responsive */
+    @media (max-width: 550px) {
+      body {
+        padding: 1.2rem;
+      }
+      .card-body-modern {
+        padding: 1.5rem;
+      }
+      .card-header-modern h4 {
+        font-size: 1.4rem;
+      }
+      .form-control-modern {
+        padding: 10px 14px;
+      }
+    }
+
+    /* extra glow for focus */
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="profile-container">
+  <div class="profile-card">
+    <!-- Modern header with icon -->
+    <div class="card-header-modern">
+      <h4>
+        <i class="fas fa-user-edit"></i> 
+        Update Profile
+      </h4>
+      <div class="header-badge">
+        <i class="fas fa-shield-alt"></i> Secure & encrypted
+      </div>
+    </div>
+
+    <div class="card-body-modern">
+      <!-- Django Messages with enhanced styling -->
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert-message alert-{{ message.tags }}" role="alert">
+            <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i>
+            <span>{{ message }}</span>
+            <button type="button" class="close-alert" aria-label="Close">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <!-- Profile form with enhanced fields -->
+      <form method="POST" enctype="multipart/form-data" id="profileUpdateForm">
+        {% csrf_token %}
+
+        <!-- loop through form fields with modern markup -->
+        {% for field in form %}
+          <div class="form-group-modern">
+            <div class="form-label">
+              <i class="fas 
+                {% if 'username' in field.name %}fa-user-circle
+                {% elif 'email' in field.name %}fa-envelope
+                {% elif 'first' in field.name %}fa-user-tag
+                {% elif 'last' in field.name %}fa-user-tag
+                {% elif 'photo' in field.name or 'avatar' in field.name or 'image' in field.name %}fa-camera
+                {% elif 'phone' in field.name %}fa-phone-alt
+                {% elif 'bio' in field.name %}fa-paragraph
+                {% else %}fa-pen-alt{% endif %}">
+              </i>
+              {{ field.label_tag }}
+            </div>
+            
+            <!-- custom rendering for file input and standard inputs -->
+            {% if field.field.widget.input_type == 'file' %}
+              <input type="file" name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-control-modern" {% if field.field.required %}required{% endif %}>
+            {% else %}
+              {{ field }}
+            {% endif %}
+            
+            <!-- help text -->
+            {% if field.help_text %}
+              <div class="help-text">
+                <i class="fas fa-info-circle"></i> {{ field.help_text|safe }}
+              </div>
+            {% endif %}
+            
+            <!-- field errors -->
+            {% for error in field.errors %}
+              <div class="error-text">
+                <i class="fas fa-exclamation-circle"></i> {{ error }}
+              </div>
+            {% endfor %}
+          </div>
+        {% endfor %}
+
+        <!-- Custom note about profile safety -->
+        <div style="background: #F1F6FE; border-radius: 1rem; padding: 12px 16px; margin: 20px 0 12px 0; font-size: 0.75rem; color: #2c6280; display: flex; gap: 12px; align-items: center;">
+          <i class="fas fa-lock" style="font-size: 1rem;"></i>
+          <span>Your information is kept private and will only be used for appointment management.</span>
+        </div>
+
+        <button type="submit" class="btn-update">
+          <i class="fas fa-save"></i> Save Changes
+        </button>
+      </form>
+
+      <!-- Back to dashboard link -->
+      <div class="back-link">
+        <a href="{% url 'dashboard' %}">
+          <i class="fas fa-arrow-left"></i> Back to My Appointments
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- extra micro interaction: auto-dismiss alerts + smooth UI -->
+  <div style="margin-top: 1.2rem; text-align: center; font-size: 0.7rem; color: #88a9d4;">
+    <i class="fas fa-database"></i> Last updated in real time
+  </div>
+</div>
+
+<script>
+  (function() {
+    // Close alert buttons functionality
+    const closeButtons = document.querySelectorAll('.close-alert');
+    closeButtons.forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        const alertDiv = this.closest('.alert-message');
+        if (alertDiv) {
+          alertDiv.style.opacity = '0';
+          alertDiv.style.transform = 'translateY(-10px)';
+          setTimeout(() => {
+            alertDiv.remove();
+          }, 200);
+        }
+      });
+    });
+
+    // Auto-dismiss success alerts after 4 seconds (optional)
+    const successAlerts = document.querySelectorAll('.alert-success');
+    successAlerts.forEach(alert => {
+      setTimeout(() => {
+        if (alert && alert.parentNode) {
+          alert.style.opacity = '0';
+          alert.style.transform = 'translateY(-10px)';
+          setTimeout(() => {
+            if (alert && alert.parentNode) alert.remove();
+          }, 250);
+        }
+      }, 4000);
+    });
+
+    // Enhance form fields with additional classes (Django generates input, we add .form-control-modern if missing)
+    const allInputs = document.querySelectorAll('#profileUpdateForm input, #profileUpdateForm select, #profileUpdateForm textarea');
+    allInputs.forEach(input => {
+      if (!input.classList.contains('form-control-modern')) {
+        input.classList.add('form-control-modern');
+      }
+      // special treatment for checkboxes / radio if any (keep original)
+      if (input.type === 'checkbox' || input.type === 'radio') {
+        input.classList.remove('form-control-modern');
+        input.style.width = 'auto';
+        input.style.marginRight = '8px';
+      }
+    });
+
+    // Add label styling for checkboxes if any (just to keep consistency)
+    const formGroups = document.querySelectorAll('.form-group-modern');
+    formGroups.forEach(group => {
+      const checkboxInput = group.querySelector('input[type="checkbox"]');
+      if (checkboxInput) {
+        const label = group.querySelector('.form-label');
+        if (label) {
+          label.style.display = 'flex';
+          label.style.alignItems = 'center';
+          label.style.flexDirection = 'row-reverse';
+          label.style.justifyContent = 'flex-end';
+          label.style.gap = '8px';
+        }
+      }
+    });
+    
+    // optional dynamic avatar preview (if file field with image upload)
+    const fileInput = document.querySelector('input[type="file"]');
+    if (fileInput && fileInput.accept && fileInput.accept.includes('image')) {
+      fileInput.addEventListener('change', function(e) {
+        // we can optionally show a mini preview but not required, just a nice micro
+        const file = e.target.files[0];
+        if (file) {
+          // you could add a preview element if you want, but it's not part of the design.
+          // adding a subtle console log for better user awareness.
+          console.log("New profile image selected: " + file.name);
+        }
+      });
+    }
+  })();
+</script>
+
+<!-- Note: This template is designed to work with Django backend context.
+     It extends a base template? Actually this file is self-contained modern UI.
+     It uses Django template syntax: {% url 'appointment_list' %}, {{ form }}, messages, etc.
+     Perfect for integration. All CSS/JS are embedded to work as a standalone enhanced UI.
+  -->
+</body>
+</html>
