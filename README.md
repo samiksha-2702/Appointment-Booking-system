@@ -1,6 +1,6 @@
 # 🏥 Appointment Booking System
 
-A full-featured **Django web application** that allows users to register, log in, and manage doctor appointments — book, view, update, and cancel — all through a clean, template-driven interface.
+A full-featured Django web application with a REST API layer (Django REST Framework) that allows users to register, log in, and manage doctor appointments — book, view, update, and cancel — through both a template-driven UI and a JSON API.
 
 ---
 
@@ -51,6 +51,11 @@ A full-featured **Django web application** that allows users to register, log in
 ### ✏️ Appointment Management
 - Update (reschedule) an existing appointment
 - Cancel an appointment with a confirmation popup
+ 
+### 🔌 REST API (DRF)
+- JSON-based API for all core resources (Doctors, Appointments)
+- Session authentication support
+- Browsable API via DRF's built-in interface a `/api/`
 
 ---
 
@@ -59,6 +64,7 @@ A full-featured **Django web application** that allows users to register, log in
 | Layer | Technology |
 |-------|-----------|
 | Backend | Python 3, Django |
+| REST API | Django REST Framework (DRF) |
 | Database | MySQL |
 | Frontend | HTML, CSS (Django Templates) |
 | Admin Panel | Django Admin |
@@ -78,6 +84,8 @@ appointment-booking-system/
 ├── appointment/                # Main Django app
 │   ├── models.py               # Doctor & Appointment models
 │   ├── views.py                # Register, login, book, update, cancel
+│   ├── serializers.py          # DRF serializers for Doctor & Appointment
+│   ├── api_views.py            # DRF API views (ViewSets / APIViews)
 │   └── urls.py
 │
 │── templates/
@@ -90,9 +98,87 @@ appointment-booking-system/
 │
 ├── screenshots/                # App screenshots for README
 ├── manage.py
+├── requirements.txt
 └── README.md
 ```
 
+---
+
+## 🔌 REST API Endpoints
+ 
+Base URL: `http://127.0.0.1:8000/api/`
+ 
+### 👨‍⚕️ Doctors
+ 
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/doctors/` | List all doctors |
+| `GET` | `/api/doctors/<id>/` | Retrieve a specific doctor |
+| `POST` | `/api/doctors/` | Create a new doctor *(admin only)* |
+| `PUT` | `/api/doctors/<id>/` | Update a doctor *(admin only)* |
+| `DELETE` | `/api/doctors/<id>/` | Delete a doctor *(admin only)* |
+ 
+**Sample Response — `GET /api/doctors/`**
+```json
+[
+  {
+    "id": 1,
+    "name": "Dr. Priya Sharma",
+    "specialization": "Cardiologist"
+  },
+  {
+    "id": 2,
+    "name": "Dr. Rahul Mehta",
+    "specialization": "Dermatologist"
+  }
+]
+```
+ 
+---
+ 
+### 📅 Appointments
+ 
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/appointments/` | List all appointments for the logged-in user |
+| `GET` | `/api/appointments/<id>/` | Retrieve a specific appointment |
+| `POST` | `/api/appointments/` | Book a new appointment |
+| `PUT` | `/api/appointments/<id>/` | Update / reschedule an appointment |
+| `PATCH` | `/api/appointments/<id>/` | Partially update (e.g., cancel) |
+| `DELETE` | `/api/appointments/<id>/` | Delete an appointment |
+ 
+**Sample Request — `POST /api/appointments/`**
+```json
+{
+  "doctor": 1,
+  "date": "2026-04-15",
+  "time": "10:30:00"
+}
+```
+ 
+**Sample Response**
+```json
+{
+  "id": 5,
+  "doctor": 1,
+  "doctor_name": "Dr. Priya Sharma",
+  "date": "2026-04-15",
+  "time": "10:30:00",
+  "status": "Booked"
+}
+```
+ 
+---
+ 
+### 🔐 Authentication
+ 
+The API uses **Django Session Authentication**. Log in via the web interface at `/login/` before calling API endpoints, or use the DRF browsable API.
+ 
+The browsable API is available at:
+```
+http://127.0.0.1:8000/api/
+```
+ 
 ---
 
 ## 🗄 Database Design
@@ -178,6 +264,7 @@ Go to [http://127.0.0.1:8000/admin](http://127.0.0.1:8000/admin), log in with yo
 User registers / logs in
         ↓
 Selects a doctor + date + time
+(via Web UI or REST API)
         ↓
 System checks for double-booking
         ↓
@@ -201,6 +288,11 @@ Status updates to: Cancelled
 | Django Admin | Manage doctors and appointments |
 | Template rendering | All UI via Django HTML templates |
 | ORM queries | `filter()`, `get()` for fetching appointments |
+| DRF `ModelSerializer` | Serializes Doctor and Appointment models to JSON |
+| DRF `ViewSet` / `APIView` | Exposes REST endpoints for CRUD operations |
+| DRF Router | Auto-generates URL patterns for ViewSets |
+| Session Authentication | Shared auth between web UI and API |
+
 
 ---
 
@@ -213,16 +305,6 @@ Status updates to: Cancelled
 
 ---
 
-## 🚧 Upcoming Improvements
-
-- [ ] Convert to REST API using Django REST Framework (DRF)
-- [ ] Add React or Next.js frontend
-- [ ] Email confirmation on booking
-- [ ] Doctor availability time slot validation
-- [ ] Pagination on appointments list
-- [ ] Deploy to Railway / Render
-
----
 
 ## 👤 Author
 
