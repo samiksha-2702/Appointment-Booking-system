@@ -9,6 +9,8 @@ from django.contrib.auth.decorators import login_required
 from datetime import date as dt_date
 from collections import Counter
 from django.contrib import messages
+from .forms import UpdateProfileForm
+
 
 # Create your views here.
 # Create
@@ -169,19 +171,13 @@ def user_dashboard(request):
 
 @login_required(login_url='/signin/')
 def update_profile(request):
-    user = request.user
     if request.method == 'POST':
-        username = request.POST.get('username')
-        email = request.POST.get('email')
+        form = UpdateProfileForm(request.POST, request.FILES, instance=request.user)
 
-        if username and email:
-            user.username = username
-            user.email = email
-            user.save()
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
+    else:
+        form = UpdateProfileForm(instance=request.user)
 
-            messages.success(request, "Profile updated successfully ✅")
-            return redirect('dashboard')  
-        else:
-            messages.error(request, "All fields are required ❌")
-
-    return render(request, 'update_profile.html', {'user': user})
+    return render(request, 'update_profile.html', {'form': form})
