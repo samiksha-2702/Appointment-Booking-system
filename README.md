@@ -9,6 +9,9 @@ A full-featured **Django web application** that allows users to register, log in
 
 ### 🏠 Dashboard
 ![Dashboard](screenshots/dashboard.png)
+
+### ✏️ Update User Profile
+![Update User profile](screenshots/update_user_profile.png)
  
 ### 🔐 Login
 ![Login](screenshots/User-login.png)
@@ -20,7 +23,7 @@ A full-featured **Django web application** that allows users to register, log in
 ![Book Appointment](screenshots/book-appointment.png)
 
 ### 📋 View Appointments
-![View Appointments](screenshots/view-appointments.png)
+![View Appointments](screenshots/view_appointments.png)
 
 ### ✏️ Update Appointment
 ![Update Appointment](screenshots/update-appointment.png)
