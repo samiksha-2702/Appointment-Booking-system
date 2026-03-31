@@ -225,3 +225,29 @@ def update_profile(request):
         form = UpdateProfileForm(instance=request.user)
 
     return render(request, 'update_profile.html', {'form': form})
+
+
+###  API VIEWS ###
+from rest_framework import viewsets
+from .serializers import DoctorSerializer, AppointmentSerializer
+from .models import Doctor, Appointment
+from rest_framework.permissions import IsAuthenticated
+
+
+class DoctorViewSet(viewsets.ModelViewSet):
+    queryset = Doctor.objects.all()
+    serializer_class = DoctorSerializer
+    permission_classes = [IsAuthenticated]
+
+class AppointmentViewSet(viewsets.ModelViewSet):
+    queryset = Appointment.objects.all()
+    serializer_class = AppointmentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Only show appointments for the logged-in user
+        return Appointment.objects.filter(user=self.request.user)
+    
+    def perform_create(self, serializer):
+        # Automatically set the user to the logged-in user
+        serializer.save(user=self.request.user)
