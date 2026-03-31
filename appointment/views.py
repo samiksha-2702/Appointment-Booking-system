@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from datetime import date as dt_date
 from collections import Counter
+from django.contrib import messages
 
 # Create your views here.
 # Create
@@ -170,8 +171,17 @@ def user_dashboard(request):
 def update_profile(request):
     user = request.user
     if request.method == 'POST':
-        user.username = request.POST.get('username')
-        user.email = request.POST.get('email')
-        user.save()
-        return redirect('view_appointments')
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+
+        if username and email:
+            user.username = username
+            user.email = email
+            user.save()
+
+            messages.success(request, "Profile updated successfully ✅")
+            return redirect('dashboard')  
+        else:
+            messages.error(request, "All fields are required ❌")
+
     return render(request, 'update_profile.html', {'user': user})
