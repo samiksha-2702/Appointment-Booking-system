@@ -128,7 +128,11 @@
           <select name="doctor">
             <option value="" selected>--Select Doctor--</option>
             {% for doctor in doctors %}
-            <option value="{{ doctor.id }}">
+            <option value="{{ doctor.id }}"
+            {% if selected_doctor and doctor.id == selected_doctor.id %}
+              selected
+            {% endif %}
+            >
               {{ doctor.name }} ({{ doctor.specialization }})
             </option>
             {% endfor %}

@@ -17,8 +17,12 @@ from django.db.models import Q
 # Create your views here.
 # Create
 @login_required(login_url='/signin/')
-def book_appointment(request):
+def book_appointment(request,doctor_id=None):
     doctors = Doctor.objects.all()
+    selected_doctor = None
+
+    if doctor_id:
+        selected_doctor = Doctor.objects.get(id=doctor_id)
 
     if request.method == 'POST':
         doctor_id = request.POST.get('doctor')
@@ -70,7 +74,10 @@ def book_appointment(request):
 
         return redirect('view_appointments')
 
-    return render(request, 'book.html', {'doctors': doctors})
+    return render(request, 'book.html', {
+        'doctors': doctors, 
+        'selected_doctor': selected_doctor
+        })
     
 # Read
 @login_required(login_url='/signin/')
