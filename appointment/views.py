@@ -168,7 +168,7 @@ def logout_fun(request):
 
 
 
-@login_required
+@login_required(login_url='/signin/')
 def user_dashboard(request):
     user = request.user
     now = timezone.now()
@@ -231,7 +231,7 @@ def update_profile(request):
 from rest_framework import viewsets
 from .serializers import DoctorSerializer, AppointmentSerializer
 from .models import Doctor, Appointment
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 
 class DoctorViewSet(viewsets.ModelViewSet):
