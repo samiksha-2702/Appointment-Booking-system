@@ -232,17 +232,23 @@ from rest_framework import viewsets
 from .serializers import DoctorSerializer, AppointmentSerializer
 from .models import Doctor, Appointment
 from rest_framework.permissions import AllowAny, IsAuthenticated
-
+from rest_framework.response import Response
 
 class DoctorViewSet(viewsets.ModelViewSet):
     queryset = Doctor.objects.all()
     serializer_class = DoctorSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        doctors = Doctor.objects.all().values('id', 'name', 'specialty')
+        return Response(doctors)
 
 class AppointmentViewSet(viewsets.ModelViewSet):
     queryset = Appointment.objects.all()
     serializer_class = AppointmentSerializer
     permission_classes = [IsAuthenticated]
+
+    
 
     def get_queryset(self):
         # Only show appointments for the logged-in user
