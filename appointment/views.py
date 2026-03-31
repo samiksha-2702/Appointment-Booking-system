@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from django.shortcuts import get_object_or_404, render, redirect
 from appointment.models import Doctor, Appointment
 from django.http import HttpResponse
@@ -10,6 +10,8 @@ from datetime import date as dt_date
 from collections import Counter
 from django.contrib import messages
 from .forms import UpdateProfileForm
+from django.utils import timezone
+from django.db.models import Q
 
 
 # Create your views here.
@@ -20,30 +22,54 @@ def book_appointment(request):
 
     if request.method == 'POST':
         doctor_id = request.POST.get('doctor')
-        date = request.POST.get('date')
-        time = request.POST.get('time')
+        date_str = request.POST.get('date')
+        time_str = request.POST.get('time')
 
-        if not doctor_id or not date or not time:
-            return render(request, 'book.html', {'doctors': doctors, 'error': 'All fields are required'})
-        
-        selected_date = request.POST.get('selected_date')
-        
-        if selected_date < str(dt_date.today()):
-            return HttpResponse("Cannot book past dates")
+        # Step 1: Check empty
+        if not doctor_id or not date_str or not time_str:
+            return render(request, 'book.html', {
+                'doctors': doctors,
+                'error': 'All fields are required'
+            })
+
+        #  Step 2: Convert string → date
+        appointment_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+
+        #  Step 3: Validate past date
+        if appointment_date < dt_date.today():
+            return render(request, 'book.html', {
+                'doctors': doctors,
+                'error': 'Cannot book past dates'
+            })
 
         doctor = Doctor.objects.get(id=doctor_id)
 
-        if Appointment.objects.filter(Doctor=doctor, date=date, time=time).exists():
-            return HttpResponse("Slot is already booked.")
+        #  Step 4: Prevent duplicate booking
+        if Appointment.objects.filter(
+            Doctor=doctor,
+            date=appointment_date,
+            time=time_str
+        ).exists():
+            return render(request, 'book.html', {
+                'doctors': doctors,
+                'error': 'Slot already booked'
+            })
 
+        time_input = request.POST.get('time')
+        if "AM" in time_input or "PM" in time_input:
+            time_obj = datetime.strptime(time_input, "%I:%M %p").time()
+        else:
+            time_obj = datetime.strptime(time_input, "%H:%M").time()
+        #  Step 5: Save appointment
         Appointment.objects.create(
-            user = request.user,
-            Doctor = doctor,
-            date = date,
-            time = time,
+            user=request.user,
+            Doctor=doctor,
+            date=appointment_date,
+            time=time_obj,
         )
 
         return redirect('view_appointments')
+
     return render(request, 'book.html', {'doctors': doctors})
     
 # Read
@@ -133,30 +159,34 @@ def logout_fun(request):
     logout(request)
     return redirect('signin')
 
-@login_required(login_url='signin')
-def dashboard(request):
-    return render(request, 'dashboard.html', {'username': request.user.username})
+
 
 @login_required
 def user_dashboard(request):
     user = request.user
+    now = timezone.now()
 
-    today = date.today()
+    upcoming = Appointment.objects.filter(
+        user=user,
+        date__gte=now.date()
+    ).order_by('date', 'time')
 
-    upcoming = Appointment.objects.filter(user=user, date__gte=today).order_by('date')
-    past = Appointment.objects.filter(user=user, date__lt=today).order_by('-date')
+    past = Appointment.objects.filter(
+        user=user,
+        date__lt=now.date()
+    ).order_by('-date', '-time')
+
 
     total = Appointment.objects.filter(user=user).count()
     completed = Appointment.objects.filter(user=user, status='completed').count()
     cancelled = Appointment.objects.filter(user=user, status='cancelled').count()
 
     appointments = Appointment.objects.filter(user=user)
-    doctors = [a.Doctor for a in appointments]
+    doctors = [a.Doctor for a in appointments]  
 
-    if doctors:
-        most_common = Counter(doctors).most_common(1)[0][0]  # Doctor object
-    else:
-        most_common = None
+    most_common = Counter(doctors).most_common(1)[0][0] if doctors else None
+
+    doctors = Doctor.objects.all()
 
     context = {
         'upcoming': upcoming,
@@ -164,9 +194,10 @@ def user_dashboard(request):
         'total': total,
         'completed': completed,
         'cancelled': cancelled,
-        'recommended_doctor': most_common,  
+        'recommended_doctor': most_common,
+        'doctors': doctors,
     }
-
+    print("LOGGED IN USER ID:", request.user.id)
     return render(request, 'dashboard.html', context)
 
 @login_required(login_url='/signin/')

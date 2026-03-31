@@ -164,8 +164,8 @@
           <!-- Upcoming Appointments Preview -->
           <div class="upcoming-preview">
             <h4><i class="fas fa-clock"></i> Upcoming Appointments</h4>
-            {% if upcoming_appointments %}
-              {% for appointment in upcoming_appointments|slice:":3" %}
+            {% if upcoming %}
+              {% for appointment in upcoming|slice:":3" %}
                 <div class="preview-appointment">
                   <div class="appointment-date">
                     <i class="fas fa-calendar-day"></i>
@@ -177,11 +177,11 @@
                   </div>
                   <div class="appointment-doctor">
                     <i class="fas fa-user-md"></i>
-                    <span>Dr. {{ appointment.doctor.name }}</span>
+                    <span>Dr. {{ appointment.Doctor.name }}</span>
                   </div>
                 </div>
               {% endfor %}
-              {% if upcoming_appointments|length > 3 %}
+              {% if upcoming|length > 3 %}
                 <a href="{% url 'view_appointments' %}" class="view-all-link">View all appointments <i class="fas fa-arrow-right"></i></a>
               {% endif %}
             {% else %}

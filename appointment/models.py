@@ -7,6 +7,7 @@ from django.dispatch import receiver
 class Doctor(models.Model):
     name = models.CharField(max_length=100)
     specialization = models.CharField(max_length=100)
+    qualification = models.CharField(max_length=100)
     availability = models.TimeField()
     available_to = models.TimeField()
 
