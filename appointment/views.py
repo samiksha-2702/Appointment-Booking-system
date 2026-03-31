@@ -176,7 +176,13 @@ def update_profile(request):
 
         if form.is_valid():
             form.save()
-            return redirect('dashboard')
+
+            # save profile image separately
+            profile = request.user.profile
+            if request.FILES.get('image'):
+                profile.image = request.FILES.get('image')
+                profile.save()
+
     else:
         form = UpdateProfileForm(instance=request.user)
 

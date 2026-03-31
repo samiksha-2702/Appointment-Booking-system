@@ -102,51 +102,65 @@
         <i class="fas fa-user-circle"></i>
         <h3>My Profile</h3>
       </div>
+
       <div class="card-content">
         {% if request.user.is_authenticated %}
           <div class="user-info">
+            <!-- Profile Image -->
             <div class="user-avatar">
-              <i class="fas fa-user-md"></i>
+              {% if request.user.profile.image %}
+                <img src="{{ request.user.profile.image.url }}" alt="Profile" class="profile-img">
+              {% else %}
+                <i class="fas fa-user-md"></i>
+              {% endif %}
             </div>
+
+            <!-- User Details -->
             <div class="user-details">
-              <h4>{{ request.user.get_full_name|default:request.user.username }}</h4>
+              <h4>
+                {{ request.user.first_name }} {{ request.user.last_name|default:"" }}
+                {% if not request.user.first_name %}
+                  {{ request.user.username }}
+                {% endif %}
+              </h4>
+
+              <p><i class="fas fa-user"></i> {{ request.user.username }}</p>
               <p><i class="fas fa-envelope"></i> {{ request.user.email }}</p>
-              {% if request.user.phone %}
-                <p><i class="fas fa-phone"></i> {{ request.user.phone }}</p>
+
+              {% if request.user.profile.phone %}
+                <p><i class="fas fa-phone"></i> {{ request.user.profile.phone }}</p>
+              {% endif %}
+
+              {% if request.user.profile.bio %}
+                <p><i class="fas fa-info-circle"></i> {{ request.user.profile.bio }}</p>
               {% endif %}
             </div>
           </div>
-          <div class="profile-actions">
-            <a href="{% url 'update_profile' %}" class="profile-link">Edit Profile <i class="fas fa-edit"></i></a>
-          </div>
-        {% else %}
-          <div class="guest-info">
-            <p>You are not logged in</p>
-            <a href="{% url 'signin' %}" class="login-link">Login to your account</a>
-          </div>
-        {% endif %}
-      </div>
-    </div>
 
-    <!-- Booking Tab -->
-    <div class="sidebar-card booking-card">
-      <div class="card-header">
-        <i class="fas fa-calendar-check"></i>
-        <h3>Quick Actions</h3>
-      </div>
-      <div class="card-content">
-        {% if request.user.is_authenticated %}
-          <div class="action-buttons">
-            <a href="{% url 'book_appointment' %}" class="action-btn book-btn">
-              <i class="fas fa-calendar-plus"></i>
-              Book Appointment
-            </a>
-            <a href="{% url 'view_appointments' %}" class="action-btn view-btn">
-              <i class="fas fa-list-alt"></i>
-              View Appointments
+          <!-- Edit Profile Button -->
+          <div class="profile-actions">
+            <a href="{% url 'update_profile' %}" class="profile-link">
+              Edit Profile <i class="fas fa-edit"></i>
             </a>
           </div>
-          
+
+          <!-- Quick Actions Section - Moved Below Profile -->
+          <div class="quick-actions-section">
+            <h4 class="quick-actions-title">
+              <i class="fas fa-bolt"></i> Quick Actions
+            </h4>
+            <div class="action-buttons">
+              <a href="{% url 'book_appointment' %}" class="action-btn book-btn">
+                <i class="fas fa-calendar-plus"></i>
+                Book Appointment
+              </a>
+              <a href="{% url 'view_appointments' %}" class="action-btn view-btn">
+                <i class="fas fa-list-alt"></i>
+                View Appointments
+              </a>
+            </div>
+          </div>
+
           <!-- Upcoming Appointments Preview -->
           <div class="upcoming-preview">
             <h4><i class="fas fa-clock"></i> Upcoming Appointments</h4>
@@ -175,12 +189,17 @@
               <a href="{% url 'book_appointment' %}" class="book-now-link">Book your first appointment</a>
             {% endif %}
           </div>
+
         {% else %}
+          <div class="guest-info">
+            <p>You are not logged in</p>
+            <a href="{% url 'signin' %}" class="login-link">Login to your account</a>
+          </div>
           <div class="guest-actions">
             <p>Please login to book appointments and view your schedule</p>
             <div class="auth-buttons">
               <a href="{% url 'signin' %}" class="signin-btn">Sign In</a>
-              <a href="{% url 'signup' %}" class="signup-btn">Sign Up</a>
+              <a href="{% url 'register' %}" class="signup-btn">Sign Up</a>
             </div>
           </div>
         {% endif %}
@@ -480,9 +499,38 @@
     display: inline-block;
     color: #667eea;
     text-decoration: none;
+    margin-bottom: 20px;
   }
   
-  /* Booking Card */
+  .profile-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #667eea;
+  }
+  
+  /* Quick Actions Section */
+  .quick-actions-section {
+    margin-top: 10px;
+    padding-top: 20px;
+    border-top: 1px solid #e9ecef;
+  }
+  
+  .quick-actions-title {
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .quick-actions-title i {
+    color: #667eea;
+    font-size: 18px;
+  }
+  
   .action-buttons {
     display: flex;
     flex-direction: column;
