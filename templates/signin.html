@@ -1,136 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Appointment Booking System</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #ffffff;
-            min-height: 100vh;
-            padding: 40px 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-        .form-container {
-            max-width: 450px;
-            width: 100%;
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            border: 1px solid #e9ecef;
-        }
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        h2 {
-            font-size: 28px;
-            color: #1a73e8;
-            margin-bottom: 30px;
-            text-align: center;
-            font-weight: 600;
-        }
+body {
+    font-family: 'Inter', sans-serif;
+    height: 100vh;
+    display: flex;
+}
 
-        input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
-            font-size: 15px;
-            font-family: 'Inter', sans-serif;
-            transition: all 0.3s ease;
-            margin-bottom: 15px;
-        }
+/* LEFT PANEL */
+.left-panel {
+    flex: 1;
+    background: linear-gradient(135deg, #1a73e8, #4dabf7);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 40px;
+}
 
-        input:focus {
-            outline: none;
-            border-color: #1a73e8;
-            box-shadow: 0 0 0 3px rgba(26,115,232,0.1);
-        }
+.logo {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
 
-        input:hover {
-            border-color: #1a73e8;
-        }
+/* RIGHT PANEL */
+.right-panel {
+    flex: 1;
+    background: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-        input::placeholder {
-            color: #adb5bd;
-        }
+/* FORM */
+.form-box {
+    width: 380px;
+    background: white;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
 
-        button {
-            width: 100%;
-            padding: 14px;
-            background: #1a73e8;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 10px 0 20px 0;
-        }
+.form-box h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #1a73e8;
+}
 
-        button:hover {
-            background: #1557b0;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(26,115,232,0.3);
-        }
+/* INPUT */
+input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
 
-        button:active {
-            transform: translateY(0);
-        }
+input:focus {
+    outline: none;
+    border-color: #1a73e8;
+}
 
-        .register-link {
-            text-align: center;
-            display: block;
-            color: #1a73e8;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
+/* BUTTON */
+button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #1a73e8;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
 
-        .register-link:hover {
-            color: #1557b0;
-            text-decoration: underline;
-        }
+button:hover {
+    background: #1557b0;
+}
 
-        @media (max-width: 768px) {
-            .form-container {
-                padding: 30px 20px;
-            }
-            
-            h2 {
-                font-size: 24px;
-            }
-        }
-    </style>
+/* LINK */
+.register-link {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    color: #1a73e8;
+    text-decoration: none;
+}
+
+.register-link:hover {
+    text-decoration: underline;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+    }
+
+    .left-panel {
+        height: 35vh;
+    }
+
+    .right-panel {
+        height: 65vh;
+    }
+}
+</style>
 </head>
+
 <body>
-    <div class="form-container">
+
+<div class="left-panel">
+    <h1>Appointment System</h1>
+    <p>Welcome back! Manage your appointments easily</p>
+</div>
+
+<div class="right-panel">
+    <div class="form-box">
         <h2>Login</h2>
 
         <form method="POST">
             {% csrf_token %}
 
-            <input type="text" name="username" placeholder="Username">
-            <input type="password" name="password" placeholder="Password">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
 
             <button type="submit">Login</button>
         </form>
 
-        <a href="{% url 'register' %}" class="register-link">Create account</a>
+        <a href="{% url 'register' %}" class="register-link">
+            Create account
+        </a>
     </div>
+</div>
+
 </body>
 </html>
