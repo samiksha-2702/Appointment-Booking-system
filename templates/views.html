@@ -1,505 +1,218 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>MediTrack | My Appointments</title>
+{% extends 'base.html' %}
 
-  <!-- Google Fonts + Inter + Fallback -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
-  <!-- Font Awesome 6 (free icons) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+{% block extra_css %}
+<style>
+  body { padding: 48px 24px; }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(145deg, #f4f9ff 0%, #eef2f8 100%);
-      min-height: 100vh;
-      padding: 48px 24px;
-    }
+  .appt-container {
+    max-width: 1280px;
+    margin: 70px auto 0;
+    background: rgba(255,255,255,0.96);
+    border-radius: 2rem;
+    box-shadow: 0 25px 45px -12px rgba(0,0,0,0.15);
+    padding: 2rem 2rem 2.5rem;
+    border: 1px solid rgba(26,115,232,0.12);
+  }
 
-    /* modern glassmorphic card container */
-    .container {
-      max-width: 1280px;
-      margin: 0 auto;
-      background: rgba(255, 255, 255, 0.96);
-      backdrop-filter: blur(0px);
-      border-radius: 2rem;
-      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.02);
-      padding: 2rem 2rem 2.5rem 2rem;
-      transition: all 0.2s ease;
-      border: 1px solid rgba(26, 115, 232, 0.12);
-    }
+  .appt-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
 
-    /* header area with gradient underline */
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
+  .appt-header h2 {
+    font-size: 1.9rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #1a5bbf, #1a73e8);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
 
-    h2 {
-      font-size: 1.9rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, #1a5bbf, #1a73e8);
-      background-clip: text;
-      -webkit-background-clip: text;
-      color: transparent;
-      letter-spacing: -0.3px;
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-    }
+  .appt-header h2 i { color: #1a73e8; -webkit-background-clip: unset; background: none; }
 
-    h2 i {
-      background: none;
-      color: #1a73e8;
-      font-size: 1.8rem;
-      background: transparent;
-      -webkit-background-clip: unset;
-    }
+  .book-new-btn {
+    background: #f8fafd;
+    padding: 8px 20px;
+    border-radius: 60px;
+    border: 1px solid #e2edff;
+    color: #1e3a8a;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.25s ease;
+  }
+  .book-new-btn:hover {
+    background: #1a73e8;
+    color: white;
+    border-color: #1a73e8;
+    transform: translateY(-1px);
+  }
 
-    .nav-links {
-      display: flex;
-      gap: 1rem;
-      background: #f8fafd;
-      padding: 6px 12px;
-      border-radius: 60px;
-      border: 1px solid #e2edff;
-    }
+  hr {
+    margin: 1.5rem 0 2rem;
+    border: none;
+    height: 2px;
+    background: linear-gradient(90deg, #e0e9ff, #cbdffc, #e0e9ff);
+  }
 
-    .nav-links a {
-      color: #1e3a8a;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.9rem;
-      padding: 8px 18px;
-      border-radius: 40px;
-      transition: all 0.25s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: transparent;
-    }
+  /* Profile strip */
+  .user-profile-card {
+    background: #fbfeff;
+    border-radius: 1.5rem;
+    padding: 1.2rem 1.8rem;
+    margin-bottom: 2.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    border: 1px solid #eef3fc;
+    box-shadow: 0 8px 20px -8px rgba(0,0,0,0.05);
+  }
+  .profile-info { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .avatar {
+    width: 52px; height: 52px;
+    background: linear-gradient(145deg, #1a73e8, #0f5bc2);
+    border-radius: 28px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 1.6rem; font-weight: 600;
+    box-shadow: 0 8px 14px -6px rgba(26,115,232,0.3);
+  }
+  .user-details h3 { font-size: 1.2rem; font-weight: 700; color: #1e293b; margin-bottom: 4px; }
+  .user-details p { color: #5b6e8c; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
+  .edit-btn {
+    background: #f0f6ff; padding: 10px 20px; border-radius: 40px;
+    text-decoration: none; font-weight: 600; font-size: 0.85rem;
+    color: #1a73e8; border: 1px solid #cde3fc;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: all 0.2s ease;
+  }
+  .edit-btn:hover { background: #1a73e8; color: white; border-color: #1a73e8; }
 
-    .nav-links a i {
-      font-size: 1rem;
-    }
+  /* Table */
+  .appointments-wrapper { overflow-x: auto; border-radius: 1.5rem; margin-top: 0.5rem; }
+  .modern-table { width: 100%; border-collapse: separate; border-spacing: 0 12px; }
+  .modern-table thead th {
+    color: #1e2f4e; font-weight: 700; font-size: 0.85rem;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    padding: 0 1rem 0.8rem; border-bottom: 2px solid #e2edf7; text-align: left;
+  }
+  .modern-table tbody tr {
+    background: white; border-radius: 20px; transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+  }
+  .modern-table tbody tr:hover {
+    transform: scale(1.01);
+    box-shadow: 0 12px 22px -12px rgba(26,115,232,0.18);
+  }
+  .modern-table td {
+    padding: 1.1rem 1rem; color: #2c3e50;
+    font-weight: 500; font-size: 0.9rem; vertical-align: middle;
+  }
+  .doctor-cell { display: flex; align-items: center; gap: 12px; }
+  .doc-icon {
+    width: 40px; height: 40px; background: #eef4ff; border-radius: 30px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: #1a73e8; font-size: 1.2rem;
+  }
+  .doc-details { font-weight: 600; color: #0f2b42; }
+  .doc-specialty { font-size: 0.7rem; color: #5f7f9e; margin-top: 2px; }
 
-    .nav-links a:hover {
-      background: #ffffff;
-      color: #0b5ed7;
-      box-shadow: 0 4px 8px rgba(26, 115, 232, 0.12);
-      transform: translateY(-1px);
-    }
+  /* Status badges */
+  .status-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border-radius: 40px; font-size: 0.75rem;
+    font-weight: 700; width: fit-content;
+  }
+  .status-booked  { background: #e0f7e8; color: #0f6e3f; border-left: 3px solid #2b8c4a; }
+  .status-cancelled { background: #fee9e6; color: #bc3900; border-left: 3px solid #e05a2a; }
+  .status-default { background: #eff3f8; color: #4b6b8f; border-left: 3px solid #8aa9c9; }
 
-    hr {
-      margin: 1.5rem 0 2rem 0;
-      border: none;
-      height: 2px;
-      background: linear-gradient(90deg, #e0e9ff, #cbdffc, #e0e9ff);
-    }
+  /* Action buttons */
+  .action-group { display: flex; gap: 12px; flex-wrap: wrap; }
+  .action-btn {
+    text-decoration: none; font-size: 0.8rem; font-weight: 600;
+    padding: 6px 14px; border-radius: 30px; transition: all 0.2s ease;
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #f8fafc; border: 1px solid #e2edff; color: #2c5f9a;
+  }
+  .action-btn:hover { background: #1a73e8; border-color: #1a73e8; color: white; transform: translateY(-2px); }
+  .cancel-btn { color: #c2412c; border-color: #ffe2db; background: #fff6f3; }
+  .cancel-btn:hover { background: #dc4c2c; border-color: #dc4c2c; color: white; }
+  .cancelled-placeholder { color: #98aec6; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; }
 
-    /* user profile card (modern) */
-    .user-profile-card {
-      background: linear-gradient(115deg, #ffffff 0%, #fbfeff 100%);
-      border-radius: 1.5rem;
-      padding: 1.2rem 1.8rem;
-      margin-bottom: 2.2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-      border: 1px solid #eef3fc;
-      box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.05);
-      transition: all 0.2s;
-    }
+  /* Empty state */
+  .empty-state {
+    text-align: center; padding: 3rem 1.5rem;
+    background: #fafcff; border-radius: 2rem;
+    margin: 2rem 0; border: 1px dashed #cde0fb;
+  }
+  .empty-state i { font-size: 4rem; color: #b9d0f0; margin-bottom: 1rem; display: block; }
+  .empty-state p { font-size: 1.2rem; color: #3b5d8c; font-weight: 500; margin-bottom: 1.5rem; }
+  .btn-book {
+    background: #1a73e8; color: white; padding: 12px 32px; border-radius: 40px;
+    text-decoration: none; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 10px;
+    box-shadow: 0 6px 14px rgba(26,115,232,0.25); transition: all 0.25s ease;
+  }
+  .btn-book:hover { background: #0f60cf; transform: translateY(-2px); }
 
-    .profile-info {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-
-    .avatar {
-      width: 52px;
-      height: 52px;
-      background: linear-gradient(145deg, #1a73e8, #0f5bc2);
-      border-radius: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 1.6rem;
-      font-weight: 600;
-      box-shadow: 0 8px 14px -6px rgba(26, 115, 232, 0.3);
-    }
-
-    .user-details h3 {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: #1e293b;
-      margin-bottom: 4px;
-    }
-
-    .user-details p {
-      color: #5b6e8c;
-      font-size: 0.9rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .edit-btn {
-      background: #f0f6ff;
-      padding: 10px 20px;
-      border-radius: 40px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.85rem;
-      color: #1a73e8;
-      transition: all 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      border: 1px solid #cde3fc;
-    }
-
-    .edit-btn i {
-      font-size: 0.85rem;
-    }
-
-    .edit-btn:hover {
-      background: #1a73e8;
-      color: white;
-      border-color: #1a73e8;
-      transform: scale(1.02);
-      box-shadow: 0 6px 12px -6px #1a73e880;
-    }
-
-    /* table modern redesign */
-    .appointments-wrapper {
-      overflow-x: auto;
-      border-radius: 1.5rem;
-      margin-top: 0.5rem;
-    }
-
-    .modern-table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0 12px;
-    }
-
-    .modern-table thead th {
-      background: transparent;
-      color: #1e2f4e;
-      font-weight: 700;
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      padding: 0 1rem 0.8rem 1rem;
-      border-bottom: 2px solid #e2edf7;
-      text-align: left;
-    }
-
-    .modern-table tbody tr {
-      background: white;
-      border-radius: 20px;
-      transition: all 0.2s;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.03);
-    }
-
-    .modern-table tbody tr:hover {
-      transform: scale(1.01);
-      box-shadow: 0 12px 22px -12px rgba(26, 115, 232, 0.18);
-      background: #ffffff;
-    }
-
+  @media (max-width: 780px) {
+    .appt-container { padding: 1.5rem; }
+    .user-profile-card { flex-direction: column; align-items: flex-start; }
+    .action-group { flex-direction: column; gap: 6px; }
+  }
+  @media (max-width: 640px) {
+    .modern-table thead { display: none; }
+    .modern-table tbody tr { display: block; margin-bottom: 1.2rem; padding: 0.8rem; }
     .modern-table td {
-      padding: 1.1rem 1rem;
-      border-bottom: none;
-      color: #2c3e50;
-      font-weight: 500;
-      font-size: 0.9rem;
-      vertical-align: middle;
-      background: inherit;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.6rem 0.2rem; border-bottom: 1px solid #edf2f7;
     }
+    .modern-table td:last-child { border-bottom: none; }
+    .modern-table td::before {
+      content: attr(data-label); font-weight: 700; width: 40%;
+      color: #1e3a5f; font-size: 0.75rem; text-transform: uppercase;
+    }
+  }
+</style>
+{% endblock %}
 
-    /* doctor cell with icon */
-    .doctor-cell {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .doc-icon {
-      width: 40px;
-      height: 40px;
-      background: #eef4ff;
-      border-radius: 30px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: #1a73e8;
-      font-size: 1.2rem;
-    }
-    .doc-details {
-      font-weight: 600;
-      color: #0f2b42;
-    }
-    .doc-specialty {
-      font-size: 0.7rem;
-      color: #5f7f9e;
-      font-weight: 400;
-      margin-top: 2px;
-    }
+{% block content %}
+<div class="appt-container">
 
-    /* badge styles - enhanced */
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 14px;
-      border-radius: 40px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.3px;
-      backdrop-filter: blur(2px);
-      width: fit-content;
-    }
-
-    .status-booked {
-      background: #e0f7e8;
-      color: #0f6e3f;
-      border-left: 3px solid #2b8c4a;
-    }
-    .status-cancelled {
-      background: #fee9e6;
-      color: #bc3900;
-      border-left: 3px solid #e05a2a;
-    }
-    .status-default {
-      background: #eff3f8;
-      color: #4b6b8f;
-      border-left: 3px solid #8aa9c9;
-    }
-
-    /* action links modern */
-    .action-group {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    .action-btn {
-      text-decoration: none;
-      font-size: 0.8rem;
-      font-weight: 600;
-      padding: 6px 14px;
-      border-radius: 30px;
-      transition: all 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: #f8fafc;
-      border: 1px solid #e2edff;
-      color: #2c5f9a;
-    }
-    .action-btn i {
-      font-size: 0.75rem;
-    }
-    .action-btn:hover {
-      background: #1a73e8;
-      border-color: #1a73e8;
-      color: white;
-      transform: translateY(-2px);
-    }
-    .cancel-btn {
-      color: #c2412c;
-      border-color: #ffe2db;
-      background: #fff6f3;
-    }
-    .cancel-btn:hover {
-      background: #dc4c2c;
-      border-color: #dc4c2c;
-      color: white;
-    }
-    .cancelled-placeholder {
-      color: #98aec6;
-      font-weight: 500;
-      font-size: 0.8rem;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    /* empty state premium */
-    .empty-state-modern {
-      text-align: center;
-      padding: 3rem 1.5rem;
-      background: #fafcff;
-      border-radius: 2rem;
-      margin: 2rem 0;
-      border: 1px dashed #cde0fb;
-    }
-    .empty-icon {
-      font-size: 4rem;
-      color: #b9d0f0;
-      margin-bottom: 1rem;
-    }
-    .empty-state-modern p {
-      font-size: 1.2rem;
-      color: #3b5d8c;
-      font-weight: 500;
-      margin-bottom: 1.5rem;
-    }
-    .btn-primary-glow {
-      background: #1a73e8;
-      color: white;
-      padding: 12px 32px;
-      border-radius: 40px;
-      text-decoration: none;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      transition: all 0.25s ease;
-      box-shadow: 0 6px 14px rgba(26, 115, 232, 0.25);
-      border: none;
-    }
-    .btn-primary-glow:hover {
-      background: #0f60cf;
-      transform: translateY(-2px);
-      box-shadow: 0 12px 20px -8px #1a73e8;
-    }
-
-    /* responsive touch */
-    @media (max-width: 780px) {
-      body {
-        padding: 24px 16px;
-      }
-      .container {
-        padding: 1.5rem;
-      }
-      .modern-table td, .modern-table th {
-        padding: 0.8rem 0.6rem;
-      }
-      .doctor-cell {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
-      }
-      .action-group {
-        flex-direction: column;
-        gap: 6px;
-      }
-      .user-profile-card {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .avatar {
-        width: 44px;
-        height: 44px;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .modern-table thead {
-        display: none;
-      }
-      .modern-table tbody tr {
-        display: block;
-        margin-bottom: 1.2rem;
-        border-radius: 1.2rem;
-        padding: 0.8rem;
-        background: white;
-      }
-      .modern-table td {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.6rem 0.2rem;
-        border-bottom: 1px solid #edf2f7;
-      }
-      .modern-table td:last-child {
-        border-bottom: none;
-      }
-      .modern-table td::before {
-        content: attr(data-label);
-        font-weight: 700;
-        width: 40%;
-        color: #1e3a5f;
-        font-size: 0.75rem;
-        text-transform: uppercase;
-      }
-      .doctor-cell {
-        flex-direction: row;
-        width: 100%;
-      }
-      .action-group {
-        flex-direction: row;
-      }
-    }
-
-    /* subtle scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #ecf3fa;
-      border-radius: 10px;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #b9d0f0;
-      border-radius: 10px;
-    }
-  </style>
-</head>
-<body>
-<div class="container">
-  <!-- Header with modern style -->
-  <div class="header">
-    <h2>
-      <i class="fas fa-calendar-check"></i> 
-      My Appointments
-    </h2>
-    <div class="nav-links">
-      <a href="{% url 'book_appointment' %}"><i class="fas fa-plus-circle"></i> Book</a>
-      <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
-    </div>
+  <div class="appt-header">
+    <h2><i class="fas fa-calendar-check"></i> My Appointments</h2>
+    <a href="{% url 'book_appointment' %}" class="book-new-btn">
+      <i class="fas fa-plus-circle"></i> Book New
+    </a>
   </div>
 
-  <hr />
+  <hr>
 
-  <!-- Enhanced user profile section -->
   <div class="user-profile-card">
     <div class="profile-info">
-      <div class="avatar">
-        {{ user.username|slice:":1"|upper }}
-      </div>
+      <div class="avatar">{{ user.username|slice:":1"|upper }}</div>
       <div class="user-details">
-        <h3><i class="fas fa-user-circle" style="font-size: 1.2rem; color:#1a73e8;"></i> {{ user.username }}</h3>
+        <h3><i class="fas fa-user-circle" style="color:#1a73e8;font-size:1rem;"></i> {{ user.username }}</h3>
         <p><i class="fas fa-envelope"></i> {{ user.email }}</p>
       </div>
     </div>
-    <div>
-      <a href="{% url 'update_profile' %}" class="edit-btn">
-        <i class="fas fa-pen"></i> Edit Profile
-      </a>
-    </div>
+    <a href="{% url 'update_profile' %}" class="edit-btn">
+      <i class="fas fa-pen"></i> Edit Profile
+    </a>
   </div>
 
-  <!-- conditional rendering: appointments list or empty state -->
   {% if appointments %}
     <div class="appointments-wrapper">
       <table class="modern-table">
@@ -517,9 +230,7 @@
           <tr>
             <td data-label="Doctor">
               <div class="doctor-cell">
-                <div class="doc-icon">
-                  <i class="fas fa-user-md"></i>
-                </div>
+                <div class="doc-icon"><i class="fas fa-user-md"></i></div>
                 <div>
                   <div class="doc-details">{{ app.Doctor.name }}</div>
                   <div class="doc-specialty"><i class="fas fa-stethoscope"></i> {{ app.Doctor.specialization }}</div>
@@ -527,26 +238,18 @@
               </div>
             </td>
             <td data-label="Date">
-              <i class="far fa-calendar-alt" style="color: #5f8ab6; margin-right: 6px;"></i> 
-              {{ app.date }}
+              <i class="far fa-calendar-alt" style="color:#5f8ab6;margin-right:6px;"></i>{{ app.date }}
             </td>
             <td data-label="Time">
-              <i class="far fa-clock" style="color: #5f8ab6; margin-right: 6px;"></i> 
-              {{ app.time }}
+              <i class="far fa-clock" style="color:#5f8ab6;margin-right:6px;"></i>{{ app.time }}
             </td>
             <td data-label="Status">
               {% if app.status == 'Booked' %}
-                <span class="status-badge status-booked">
-                  <i class="fas fa-check-circle"></i> Confirmed
-                </span>
+                <span class="status-badge status-booked"><i class="fas fa-check-circle"></i> Confirmed</span>
               {% elif app.status == 'Cancelled' %}
-                <span class="status-badge status-cancelled">
-                  <i class="fas fa-ban"></i> Cancelled
-                </span>
+                <span class="status-badge status-cancelled"><i class="fas fa-ban"></i> Cancelled</span>
               {% else %}
-                <span class="status-badge status-default">
-                  <i class="fas fa-hourglass-half"></i> {{ app.status }}
-                </span>
+                <span class="status-badge status-default"><i class="fas fa-hourglass-half"></i> {{ app.status }}</span>
               {% endif %}
             </td>
             <td data-label="Actions">
@@ -555,15 +258,14 @@
                   <a href="{% url 'update_appointment' app.id %}" class="action-btn">
                     <i class="fas fa-edit"></i> Edit
                   </a>
-                  <a href="{% url 'cancel_appointment' app.id %}" 
-                     class="action-btn cancel-btn"
-                     onclick="return confirm('⚠️ Cancel appointment?\nThis action cannot be undone. Are you sure?');">
+                  <a href="{% url 'cancel_appointment' app.id %}" class="action-btn cancel-btn"
+                     onclick="return confirm('Cancel this appointment? This cannot be undone.');">
                     <i class="fas fa-trash-alt"></i> Cancel
                   </a>
                 </div>
               {% else %}
                 <div class="cancelled-placeholder">
-                  <i class="fas fa-history"></i> <span>Unavailable</span>
+                  <i class="fas fa-history"></i> Unavailable
                 </div>
               {% endif %}
             </td>
@@ -572,37 +274,16 @@
         </tbody>
       </table>
     </div>
+
   {% else %}
-    <!-- modern empty state with better visual -->
-    <div class="empty-state-modern">
-      <div class="empty-icon">
-        <i class="fas fa-notes-medical"></i>
-      </div>
-      <p>No upcoming appointments yet</p>
-      <a href="{% url 'book_appointment' %}" class="btn-primary-glow">
+    <div class="empty-state">
+      <i class="fas fa-notes-medical"></i>
+      <p>No appointments yet</p>
+      <a href="{% url 'book_appointment' %}" class="btn-book">
         <i class="fas fa-calendar-plus"></i> Book your first appointment
       </a>
-      <div style="margin-top: 24px; font-size: 0.8rem; color: #88a9d4;">
-        <i class="fas fa-shield-alt"></i> Secure & instant booking
-      </div>
     </div>
   {% endif %}
-  
-  <!-- subtle decorative footer (optional) -->
-  <div style="margin-top: 2rem; text-align: center; font-size: 0.7rem; color: #a2bbdf; border-top: 1px solid #ecf3fc; padding-top: 1.5rem;">
-    <i class="fas fa-lock"></i> Your health data is encrypted · Manage appointments with ease
-  </div>
-</div>
 
-<!-- tiny script to handle confirm/cancel with nice console fallback, but it's inline anyway -->
-<script>
-  (function() {
-    // Add a smooth confirm dialog for cancel actions (already present in onclick)
-    // but also to enhance any dynamically added elements if needed. 
-    // However, all cancel links already have confirm due to Django template. 
-    // Additional micro-interaction: add hover soundless, just UI love.
-    console.log("MediTrack UI Enhanced — modern appointments dashboard");
-  })();
-</script>
-</body>
-</html>
+</div>
+{% endblock %}

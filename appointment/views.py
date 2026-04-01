@@ -12,7 +12,7 @@ from django.contrib import messages
 from .forms import UpdateProfileForm
 from django.utils import timezone
 from django.db.models import Q
-
+from django.views.decorators.cache import never_cache
 
 # Create your views here.
 # Create
@@ -56,7 +56,8 @@ def book_appointment(request,doctor_id=None):
         ).exists():
             return render(request, 'book.html', {
                 'doctors': doctors,
-                'error': 'Slot already booked'
+                # 'error': 'Slot already booked'
+                'today': date.today().isoformat(),
             })
 
         time_input = request.POST.get('time')
@@ -169,6 +170,7 @@ def logout_fun(request):
 
 
 @login_required(login_url='/signin/')
+@never_cache
 def user_dashboard(request):
     user = request.user
     now = timezone.now()
