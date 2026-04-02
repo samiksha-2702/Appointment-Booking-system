@@ -7,26 +7,26 @@ A full-featured Django web application with a REST API layer (Django REST Framew
 
 ## 📸 Screenshots
 
-### 🏠 Dashboard
-![Dashboard](screenshots/dashboard.png)
+### 📝 Register
+![Register](screenshots/User-registration.png)
 
-### ✏️ Update User Profile
-![Update User profile](screenshots/edit_user_profile.png)
-
-### 📋 View Appointments
-![View Appointments](screenshots/view_appointments.png)
- 
 ### 🔐 Login
 ![Login](screenshots/User-login.png)
 
-### 📝 Register
-![Register](screenshots/User-registration.png)
+### 🏠 Dashboard
+![Dashboard](screenshots/dashboard.png)
 
 ### 📅 Book Appointment
 ![Book Appointment](screenshots/book-appointment.png)
 
+### 📋 View Appointments
+![View Appointments](screenshots/view_appointments.png)
+
 ### ✏️ Update Appointment
 ![Update Appointment](screenshots/update-appointment.png)
+
+### ✏️ Update User Profile
+![Update User profile](screenshots/edit_user_profile.png)
 
 ## ✨ Features
 
